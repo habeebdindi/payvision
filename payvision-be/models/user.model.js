@@ -5,20 +5,20 @@ module.exports = (sequelize, Sequelize) => {
 	username: {
             type: Sequelize.STRING
         },
-        email: {
-            type: Sequelize.STRING,
-            unique: true
-        },
-        password: {
-            type: Sequelize.STRING
-        },
-        otp: {
-            type: Sequelize.INTEGER,
-            unique: true
+    email: {
+        type: Sequelize.STRING,
+        unique: true
+    },
+    password: {
+        type: Sequelize.STRING
+    },
+    otp: {
+        type: Sequelize.INTEGER,
+        unique: true
 	},
-        otpExp: {
-            type: Sequelize.DATE,
-        }
+    otpExp: {
+        type: Sequelize.DATE,
+    }
     });
     return User;
 };

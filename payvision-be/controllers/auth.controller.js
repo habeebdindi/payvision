@@ -1,4 +1,4 @@
-const db = require('../models');
+const db = require('../models').db;
 const User = db.user;
 const authSecret = process.env.AUTH_SECRET;
 
@@ -7,19 +7,19 @@ const bcrypt = require('bcryptjs');
 
 exports.signup = async (req, res) => {
     try {
-	{username, email, password} = req.body;
-	const user = await User.create({
-	    username, email, password: bcrypt.hashSync(password, 5)
-	});
-	res.status(200).json({message: "Registration was successful!"});
+		const {username, email, password} = req?.body;
+		const user = await User.create({
+			username, email, password: bcrypt.hashSync(password, 5)
+		});
+		res.status(200).json({message: "Registration was successful!"});
     } catch (e) {
-	res.status(500).json({message: e.message});
+		res.status(500).json({message: e.message});
     }
 }
 
 exports.signin = async (req, res) => {
     try {
-	{username, password} = req.body
+	const {username, password} = req?.body
 	const user = await User.findOne({ where: {username} });
 	if (!user) {
             res.status(404).json({message: "User Not found!"});

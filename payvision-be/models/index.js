@@ -1,5 +1,5 @@
 const User = require('../models/user.model.js');
-const Category = require('../models/category.model.js');
+const Category = require('../models/categories.model.js');
 const Transaction = require('../models/transaction.model.js');
 const Account = require('../models/account.model.js');
 const Tag = require('../models/tag.model.js');
@@ -8,9 +8,9 @@ const mysqlConfig = require('../config/db.config.js');
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(
+	mysqlConfig.DB,
     mysqlConfig.USER,
-    mysqlConfig.PASS,
-    mysqlConfig.DB,
+    mysqlConfig.PASSWORD,
     {
 	host: mysqlConfig.HOST,
 	dialect: mysqlConfig.dialect,
@@ -44,4 +44,4 @@ db.transaction.belongsToMany(db.tag, { through: "transactionTags" });
 db.tag.belongsToMany(db.transaction, { through: "transactionTags" });
 
 
-module.exports = db;
+module.exports = {db, sequelize};

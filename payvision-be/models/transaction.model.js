@@ -12,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
 	},
         date: {
-            type: Sequelize.DATETIME,
+            type: Sequelize.DATE,
 	},
         currency: {
             type: Sequelize.STRING,
