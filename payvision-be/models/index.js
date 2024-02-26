@@ -8,19 +8,19 @@ const mysqlConfig = require('../config/db.config.js');
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(
-	mysqlConfig.DB,
-    mysqlConfig.USER,
-    mysqlConfig.PASSWORD,
-    {
-	host: mysqlConfig.HOST,
-	dialect: mysqlConfig.dialect,
-	pool: {
-	    max: 5,
-	    min: 0,
-	    acquire: 30000,
-	    idle: 10000,
-	}
+  mysqlConfig.DB,
+  mysqlConfig.USER,
+  mysqlConfig.PASSWORD,
+  {
+    host: mysqlConfig.HOST,
+    dialect: mysqlConfig.dialect,
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
     }
+  }
 );
 
 const db = {Sequelize, sequelize};
@@ -44,4 +44,4 @@ db.transaction.belongsToMany(db.tag, { through: "transactionTags" });
 db.tag.belongsToMany(db.transaction, { through: "transactionTags" });
 
 
-module.exports = {db, sequelize};
+module.exports = db;
