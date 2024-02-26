@@ -5,6 +5,7 @@ const { verifySignup } = require('../middleware');
 const controller = require('../controllers/auth.controller');
 
 router.post('/login', controller.signin);
-router.post('/signup', verifySignUp, controller.signup);
+router.post('/signup', verifySignup, controller.signup);
+router.get('/logout', controller.signout);
 
 module.exports = router;

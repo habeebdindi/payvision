@@ -16,4 +16,9 @@ app.use('/api/auth', require('./routes/auth.route'));
 
 app.get('/', (req, res) => {res.send("Welcome to payvision backend!")});
 
-app.listen(port, () => {console.log(`server running port ${port}`);});
+
+db.sync({ alter: true })
+  .then((result) => {
+    app.listen(port, () => {console.log(`server running port ${port}`);});
+  })
+  .catch((err) => console.log(err));
