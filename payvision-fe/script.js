@@ -97,6 +97,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // credit or debit button
+  document.getElementById('credit').addEventListener('click', function() {
+    document.querySelector('.income-details').style.display = 'block';
+    document.querySelector('.expenses-details').style.display = 'none';
+  });
+
+  document.getElementById('debit').addEventListener('click', function() {
+    document.querySelector('.income-details').style.display = 'none';
+    document.querySelector('.expenses-details').style.display = 'block';
+  });
+  
   // Function to update the dashboard
   function updateDashboard() {
     document.getElementById("incomeDisplay").textContent = `$${totalIncome}`;

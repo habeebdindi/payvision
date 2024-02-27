@@ -505,6 +505,10 @@ button[type="submit"]:hover {
   width: 80%;
 }
 
+.income-details, .expenses-details {
+  display: none;
+}
+
 .close {
   color: #aaaaaa;
   position: absolute;
