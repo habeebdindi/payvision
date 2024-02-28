@@ -5,9 +5,6 @@ module.exports = (sequelize, Sequelize) => {
     description: {
       type: Sequelize.TEXT,
     },
-    type: {
-      type: Sequelize.STRING,
-    },
     paymentMethod: {
       type: Sequelize.STRING,
     },
@@ -17,8 +14,11 @@ module.exports = (sequelize, Sequelize) => {
     currency: {
       type: Sequelize.STRING,
     },
-    recurring: {
+    recurred: {
       type: Sequelize.BOOLEAN,
+    },
+    frequency: {
+      type: Sequelize.STRING,
     },
   });
   return Transaction;
