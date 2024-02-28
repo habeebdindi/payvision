@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./models');
 const seed = require('./seed');
+const cron = require('./cronjobs/recurring.js');
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -19,7 +20,7 @@ app.use('/api/auth', require('./routes/auth.route'));
 app.get('/', (req, res) => {res.send("Welcome to payvision backend!");});
 
 db.sequelize.sync({ force: true })
-  .then(() => {seed();})
+  .then(() => {seed(); cron();})
   .then(() => {
     app.listen(port, () => {console.log(`server running port ${port}`);});
   })
