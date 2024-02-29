@@ -55,25 +55,103 @@ document.addEventListener("DOMContentLoaded", function () {
       this.classList.toggle("fa-eye-slash");
     });
 
+  // signUp handling
+  signupForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const signUpUsername = document.getElementById("signupUsername").value;
+    const signUpEmail = document.getElementById("signupEmail").value;
+    const signUpPassword = document.getElementById("signupPassword").value;
+
+    const signUpData = {
+      username: signUpUsername,
+      email: signUpEmail,
+      password: signUpPassword,
+    };
+
+    fetch("http://localhost:3000/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(signUpData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert("Account created successfully");
+        } else {
+          alert(data.error || "Signup failed");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert(error);
+      });
+  });
+
+  // login handling
   loginForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
     const username = document.querySelector("#loginId").value;
     const password = document.querySelector("#password").value;
-    e.preventDefault();
-    const loadingTime = Math.floor(Math.random() * (8000 - 4000 + 1)) + 4000;
     showLoadingIcon();
 
-    setTimeout(() => {
-      if (password && username) {
+    const loginData = {
+      username: username,
+      password: password,
+    };
+
+    // Sends a login request to the backend
+    fetch("http://localhost:3000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
         hideLoadingIcon();
-        banner.style.display = "none";
-        featuresSection.style.display = "none";
-        dashboard.style.display = "block";
-        signUpButton.textContent = "Logout";
-      }
-      signUpButton.addEventListener("click", function () {
-        window.location.href = "index.html";
+
+        // Check if login was successful
+        if (data.success) {
+          banner.style.display = "none";
+          featuresSection.style.display = "none";
+          dashboard.style.display = "block";
+          signUpButton.textContent = "Logout";
+
+          // Add logout event listener to signUpButton
+          signUpButton.addEventListener("click", function () {
+            window.location.href = "index.html";
+          });
+        } else {
+          // Handle login failure (e.g., show an error message)
+          console.error("Login failed:", data.message);
+          alert(data.message);
+        }
+      })
+      .catch((error) => {
+        hideLoadingIcon();
+        console.error("Error:", error);
       });
-    }, loadingTime);
+
+    // const loadingTime = Math.floor(Math.random() * (8000 - 4000 + 1)) + 4000;
+    // showLoadingIcon();
+
+    // setTimeout(() => {
+    //   if (password && username) {
+    //     hideLoadingIcon();
+    //     banner.style.display = "none";
+    //     featuresSection.style.display = "none";
+    //     dashboard.style.display = "block";
+    //     signUpButton.textContent = "Logout";
+    //   }
+    //   signUpButton.addEventListener("click", function () {
+    //     window.location.href = "index.html";
+    //   });
+    // }, loadingTime);
   });
 
   // Open add transaction modal
@@ -98,16 +176,16 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // credit or debit button
-  document.getElementById('credit').addEventListener('click', function() {
-    document.querySelector('.income-details').style.display = 'block';
-    document.querySelector('.expenses-details').style.display = 'none';
+  document.getElementById("credit").addEventListener("click", function () {
+    document.querySelector(".income-details").style.display = "block";
+    document.querySelector(".expenses-details").style.display = "none";
   });
 
-  document.getElementById('debit').addEventListener('click', function() {
-    document.querySelector('.income-details').style.display = 'none';
-    document.querySelector('.expenses-details').style.display = 'block';
+  document.getElementById("debit").addEventListener("click", function () {
+    document.querySelector(".income-details").style.display = "none";
+    document.querySelector(".expenses-details").style.display = "block";
   });
-  
+
   // Function to update the dashboard
   function updateDashboard() {
     document.getElementById("incomeDisplay").textContent = `$${totalIncome}`;
