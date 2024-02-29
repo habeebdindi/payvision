@@ -69,7 +69,9 @@ document.addEventListener("DOMContentLoaded", function () {
       password: signUpPassword,
     };
 
-    fetch("https://payvision.vercel.app/api/auth/signup", {
+    const baseUrl = process.env.PAYVISION_URL;
+
+    fetch(`${PAYVISION_URL}/api/auth/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -103,8 +105,10 @@ document.addEventListener("DOMContentLoaded", function () {
       password: password,
     };
 
+    const baseUrl = process.env.PAYVISION_URL;
+
     // Sends a login request to the backend
-    fetch("https://payvision.vercel.app/api/auth/login", {
+    fetch(`${baseUrl}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
