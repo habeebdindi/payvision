@@ -69,7 +69,9 @@ document.addEventListener("DOMContentLoaded", function () {
       password: signUpPassword,
     };
 
-    fetch("/api/auth/signup", {
+    const baseUrl = process.env.PAYVISION_URL;
+
+    fetch(`${baseUrl}/api/auth/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -85,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       })
       .catch((error) => {
-        console.error("Error:", error);
+        // console.error("Error:", error);
         alert(error);
       });
   });
@@ -103,8 +105,10 @@ document.addEventListener("DOMContentLoaded", function () {
       password: password,
     };
 
+    const baseUrl = process.env.PAYVISION_URL;
+
     // Sends a login request to the backend
-    fetch("/api/auth/login", {
+    fetch(`${baseUrl}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
