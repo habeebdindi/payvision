@@ -21,7 +21,7 @@ exports.createTransaction = async (req, res) => {
         res.status(400).json({message: 'Bad Request. Recurred and Frequency Mismatch'});
     }
     const category = await Category.findByPk(categoryId, {
-      include: [{ model: Tag, attributes: ['name'] }],
+      include: [{ model: Tag, attributes: ['name'], as: 'tag' }],
     })
     if (!category) {
       res.status(400).json({message: 'Bad Request. No Such Category'});
@@ -37,7 +37,7 @@ exports.createTransaction = async (req, res) => {
       categoryId: categoryId,
     });
     const user = await User.findByPk(userId);
-    if (category['tag.name'] === 'debit') {
+    if (category.tag.name == 'debit') {
       user.totalDebit += newTransaction.amount;
       user.balance -= newTransaction.amount;
     } else {

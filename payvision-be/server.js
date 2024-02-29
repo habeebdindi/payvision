@@ -24,8 +24,11 @@ app.use('/api/user', require('./routes/user.route'));
 
 app.get('/', (req, res) => {res.send("Welcome to payvision backend!");});
 
-db.sequelize.sync({ force: true })
-  .then(() => {seed(); cron.recurringJob();})
+db.sequelize.sync()
+  .then(() => {
+//    seed();
+    cron.recurringJob();
+  })
   .then(() => {
     app.listen(port, () => {console.log(`server running port ${port}`);});
   })

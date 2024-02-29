@@ -12,7 +12,6 @@ exports.createCategory = async (req, res) => {
       description: description || 'No description',
       tagId: tagId,
     });
-    category
     res.status(200).json(category);
   } catch (e) {
     res.status(500).json({message: e.message});

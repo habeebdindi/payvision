@@ -26,17 +26,6 @@ let transaction1;
 describe('nextOccurrenceDate', () => {
     beforeAll(async () => {
 	await db.sequelize.sync();
-//	transaction = await Transaction.create({
-//	    amount: faker.random.float({min: 100, max: 200000, precision: 2}),
-//	    description: faker.lorem.paragraph(),
-//	    paymentMethod: 'cash',
-//	    currency: 'NGN',
-//            frequency: 'daily',
-//            date: new Date('2024-01-01'),
-//	    recurred: true,
-//	    categoryId: 1,
-//	    userId: 1,
-//	});
 	transaction = await Transaction.findByPk(1);
 	nextDate = new Date();
     });
