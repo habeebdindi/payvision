@@ -7,3 +7,5 @@ const { authorization } = require('../middleware');
 router.post('/new', authorization, controller.createTag);
 router.get('/all', authorization, controller.getTags);
 router.get('/:id/categories', authorization, controller.getTagCategories);
+
+module.exports = router;
