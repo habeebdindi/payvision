@@ -1,5 +1,5 @@
 const authorization = require('./authorization');
-const verifySignup = require('./verifySignUp.js');
+const verifySignup = require('./verifySignup.js');
 
 module.exports = {
   authorization,
