@@ -7,7 +7,7 @@ exports.createTag = async (req, res) => {
     if (!name) {
       res.status(400).json({message: 'Bad Request. Incomplete Information'});
     }
-    const tag = Tag.create({ name });
+    const tag = await Tag.create({ name });
     res.status(200).json(tag);
   } catch (e) {
     res.status(500).json({message: e.message});
@@ -16,7 +16,7 @@ exports.createTag = async (req, res) => {
 
 exports.getTags = async (req, res) => {
   try {
-    const tags = Tag.findAll();
+    const tags = await Tag.findAll();
     res.status(200).json(tags);
   } catch (e) {
     res.status(500).json({message: e.message});
