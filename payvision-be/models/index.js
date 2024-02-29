@@ -1,3 +1,4 @@
+import mysql2 from 'mysql2'; // Needed to fix sequelize issues with WebPack
 const mysqlConfig = require('../config/db.config.js');
 
 const User = require('../models/user.model.js');
@@ -13,6 +14,7 @@ const sequelize = new Sequelize(
   {
     host: mysqlConfig.HOST,
     dialect: mysqlConfig.dialect,
+    mysql2, // Needed to fix sequelize issues with WebPack
     pool: {
       max: 5,
       min: 0,
