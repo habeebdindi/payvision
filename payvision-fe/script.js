@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const baseUrl = process.env.PAYVISION_URL;
 
-    fetch(`${PAYVISION_URL}/api/auth/signup`, {
+    fetch(`${baseUrl}/api/auth/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
