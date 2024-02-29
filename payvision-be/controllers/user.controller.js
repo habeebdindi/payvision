@@ -4,7 +4,7 @@ const User = db.user;
 exports.getUser = async (req, res) => {
   try {
     const { userId } = req.user;
-    const user = User.findByPk(userId, {
+    const user = await User.findByPk(userId, {
       attributes: [
         'username',
         'email',
