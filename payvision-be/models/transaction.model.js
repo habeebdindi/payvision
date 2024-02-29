@@ -11,14 +11,14 @@ module.exports = (sequelize, Sequelize) => {
     date: {
       type: Sequelize.DATE,
     },
-    currency: {
-      type: Sequelize.STRING,
-    },
     recurred: {
       type: Sequelize.BOOLEAN,
     },
     frequency: {
       type: Sequelize.STRING,
+    },
+    amount: {
+      type: Sequelize.FLOAT,
     },
   });
   return Transaction;

@@ -35,7 +35,7 @@ db.transaction.belongsTo(db.user);
 db.category.hasMany(db.transaction);
 db.transaction.belongsTo(db.category);
 
-db.tag.hasOne(db.category);
+db.tag.hasMany(db.category);
 db.category.belongsTo(db.tag);
 
 module.exports = db;

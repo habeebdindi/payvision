@@ -20,13 +20,16 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATE,
     },
     balance: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.DOUBLE,
     },
     totalCredit: {
-      type: Sequelize.FLOAT,
+      type: Sequelize.DOUBLE,
+    },
+    currency: {
+      type: Sequelize.STRING,
     },
     totalDebit: {
-      type: Sequelize.FLOAT,
+      type: Sequelize.DOUBLE,
     },
   });
   return User;
