@@ -26,17 +26,18 @@ let transaction1;
 describe('nextOccurrenceDate', () => {
     beforeAll(async () => {
 	await db.sequelize.sync();
-	transaction = await Transaction.create({
-	    amount: faker.random.float({min: 100, max: 200000, precision: 2}),
-	    description: faker.lorem.paragraph(),
-	    paymentMethod: 'cash',
-	    currency: 'NGN',
-            frequency: 'daily',
-            date: new Date('2024-01-01'),
-	    recurred: true,
-	    categoryId: 1,
-	    userId: 1,
-	});
+//	transaction = await Transaction.create({
+//	    amount: faker.random.float({min: 100, max: 200000, precision: 2}),
+//	    description: faker.lorem.paragraph(),
+//	    paymentMethod: 'cash',
+//	    currency: 'NGN',
+//            frequency: 'daily',
+//            date: new Date('2024-01-01'),
+//	    recurred: true,
+//	    categoryId: 1,
+//	    userId: 1,
+//	});
+	transaction = await Transaction.findByPk(1);
 	nextDate = new Date();
     });
     afterAll(async () => {
@@ -69,19 +70,19 @@ describe('nextOccurrenceDate', () => {
 
 describe('isSameDate', () => {
     beforeAll(async () => {
-	transaction1 = await Transaction.findByPk(2);
-	transaction1.update({date: new Date('2024-02-28')});
+	transaction = await Transaction.findByPk(1);
+	transaction.update({date: new Date('2024-02-28')});
 	await db.sequelize.sync();
     });
     test('should return true if two dates have the same date', () => {
-        const date1 = nextOccurrenceDate(transaction1);
+        const date1 = nextOccurrenceDate(transaction);
         const date2 = new Date();
-	console.log(`date0: ${transaction1.date}\ndate1: ${date1}\ndate2: ${date2}`)
+	console.log(`date0: ${transaction.date}\ndate1: ${date1}\ndate2: ${date2}`)
         expect(isSameDate(date1, date2)).toBe(true);
     });
 
     test('should return false if two dates have different dates', () => {
-        const date1 = nextOccurrenceDate(transaction1);
+        const date1 = nextOccurrenceDate(transaction);
         const date2 = new Date('2024-03-01');
         expect(isSameDate(date1, date2)).toBe(false);
     });

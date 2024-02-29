@@ -23,6 +23,7 @@ function recurringJob() {
                                 amount: transaction.amount,
                                 userId: transaction.userId,
                                 currency: transaction.currency,
+				frequency: 'none',
                                 paymentMethod: transaction.paymentMethod,
                                 date: nextDate,
                                 recurred: false,
