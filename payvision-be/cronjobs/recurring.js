@@ -7,48 +7,48 @@ const Tag = db.tag;
 const Category = db.category;
 
 function recurringJob() {
-    return new Promise((resolve, reject) => {
-        cron.schedule('0 0 * * *', async () => {
-            try {
-                const recurringTransactions = await Transaction.findAll({ where: { recurred: true } });
-                await Promise.all(
-                    recurringTransactions.map(async (transaction) => {
-                        const nextDate = await nextOccurrenceDate(transaction);
-                        const today = new Date();
-                        if (isSameDate(nextDate, today)) {
-                            const newTransaction = await Transaction.create({
-                                description: `RENEWAL: ${transaction.description}`,
-                                amount: transaction.amount,
-                                categoryId: transaction.categoryId,
-                                amount: transaction.amount,
-                                userId: transaction.userId,
-                                currency: transaction.currency,
-				frequency: 'none',
-                                paymentMethod: transaction.paymentMethod,
-                                date: nextDate,
-                                recurred: false,
-                            });
-                            const user = await User.findByPk(transaction.userId);
-                            const category = await Category.findByPk(transaction.categoryId, {
-                                include: [{ model: Tag, attributes: ['name'] }],
-                            });
-                            if (category['tag.name'] === 'debit') {
-                                user.totalDebit += transaction.amount;
-                                user.balance -= transaction.amount;
-                            } else {
-                                user.totalCredit += transaction.amount;
-                                user.balance += transaction.amount;
-                            }
-                            await user.save();
-                        }
-                    })
-                );
-                resolve();
-            } catch (error) {
-                reject(error);
+  return new Promise((resolve, reject) => {
+    cron.schedule('0 0 * * *', async () => {
+      try {
+        const recurringTransactions = await Transaction.findAll({ where: { recurred: true } });
+        await Promise.all(
+          recurringTransactions.map(async (transaction) => {
+            const nextDate = await nextOccurrenceDate(transaction);
+            const today = new Date();
+            if (isSameDate(nextDate, today)) {
+              const newTransaction = await Transaction.create({
+                description: `RENEWAL: ${transaction.description}`,
+                amount: transaction.amount,
+                categoryId: transaction.categoryId,
+                amount: transaction.amount,
+                userId: transaction.userId,
+                currency: transaction.currency,
+                frequency: 'none',
+                paymentMethod: transaction.paymentMethod,
+                date: nextDate,
+                recurred: false,
+              });
+              const user = await User.findByPk(transaction.userId);
+              const category = await Category.findByPk(transaction.categoryId, {
+                include: [{ model: Tag, attributes: ['name'] }],
+              });
+              if (category['tag.name'] === 'debit') {
+                user.totalDebit += transaction.amount;
+                user.balance -= transaction.amount;
+              } else {
+                user.totalCredit += transaction.amount;
+                user.balance += transaction.amount;
+              }
+              await user.save();
             }
-        });
+          })
+        );
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
     });
+  });
 }
 
 function nextOccurrenceDate(transaction) {
