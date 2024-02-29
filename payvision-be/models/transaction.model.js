@@ -5,20 +5,20 @@ module.exports = (sequelize, Sequelize) => {
     description: {
       type: Sequelize.TEXT,
     },
-    type: {
-      type: Sequelize.STRING,
-    },
     paymentMethod: {
       type: Sequelize.STRING,
     },
     date: {
       type: Sequelize.DATE,
     },
-    currency: {
+    recurred: {
+      type: Sequelize.BOOLEAN,
+    },
+    frequency: {
       type: Sequelize.STRING,
     },
-    recurring: {
-      type: Sequelize.BOOLEAN,
+    amount: {
+      type: Sequelize.FLOAT,
     },
   });
   return Transaction;

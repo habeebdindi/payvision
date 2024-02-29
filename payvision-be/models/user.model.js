@@ -18,7 +18,19 @@ module.exports = (sequelize, Sequelize) => {
     },
     otpExp: {
       type: Sequelize.DATE,
-    }
+    },
+    balance: {
+      type: Sequelize.DOUBLE,
+    },
+    totalCredit: {
+      type: Sequelize.DOUBLE,
+    },
+    currency: {
+      type: Sequelize.STRING,
+    },
+    totalDebit: {
+      type: Sequelize.DOUBLE,
+    },
   });
   return User;
 };
