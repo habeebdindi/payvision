@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
       password: signUpPassword,
     };
 
-    fetch("http://localhost:3000/api/auth/signup", {
+    fetch("/api/auth/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     // Sends a login request to the backend
-    fetch("http://localhost:3000/api/auth/login", {
+    fetch("/api/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
