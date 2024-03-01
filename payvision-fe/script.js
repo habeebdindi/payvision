@@ -212,20 +212,45 @@ document.addEventListener("DOMContentLoaded", function () {
     button.addEventListener("click", function (e) {
       if (this.closest(".income-details")) {
         e.preventDefault();
+        const amount = parseFloat(incomeInput.value);
         // Handle income submission
-        totalIncome += parseFloat(incomeInput.value);
+        totalIncome += parseFloat(amount);
+
+        let transactionData = {
+          totalIncome: amount,
+          expenseDate: expenseDate.value,
+        };
+        // Send the transaction data to the backend
+        sendTransactionToBackend(transactionData);
         incomeInput.value = "";
       } else if (this.closest(".expenses-details")) {
         e.preventDefault();
+        const amount = parseFloat(expenseInput.value);
         const description = document.getElementById("expenseDescription").value;
+
         // Handle expense submission
-        totalExpenses += parseFloat(expenseInput.value);
+        totalExpenses += parseFloat(amount);
         addTransaction(
           expenseDate.value,
           description,
           expenseCategory.options[expenseCategory.selectedIndex].text,
           expenseInput.value
         );
+
+        // Prepare transaction data for backend
+        let transactionData = {
+          expenseInput: expenseInput,
+          expenseCategory: expenseCategory,
+          description: description,
+          expenseDate: expenseDate,
+        };
+
+        // Send the transaction data to the backend
+        sendTransactionToBackend(transactionData);
+        // Update UI
+        totalExpenses += amount;
+        expenseInput.value = ""; // Clear input after submission
+        document.getElementById("expenseDescription").value = "";
       }
       updateDashboard();
 
@@ -233,6 +258,30 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("myModal").style.display = "none";
     });
   });
+
+  // Function to send transaction data to the backend
+  function sendTransactionToBackend(transactionData) {
+    const baseUrl = "https://payvision.vercel.app"; // Use your actual backend URL
+
+    fetch(`${baseUrl}/api/transactions/new`, {
+      // Adjust the endpoint as needed
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure you're getting the token as needed
+      },
+      body: JSON.stringify(transactionData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Transaction added:", data);
+        // Optionally: Add logic here to update the UI based on the response
+      })
+      .catch((error) => {
+        console.error("Error adding transaction:", error);
+        // Optionally: Handle errors, such as by displaying a message to the user
+      });
+  }
 });
 
 // Toggle password visibility
