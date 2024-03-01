@@ -15,10 +15,10 @@ exports.createTransaction = async (req, res) => {
     }
     const frequencies = ['daily', 'weekly', 'monthly', 'yearly'];
     if (recurred && (!(frequency) || !(frequencies.includes(frequency)))) {
-        res.status(400).json({message: 'Bad Request. No Frequency Specified'});
+      res.status(400).json({message: 'Bad Request. No Frequency Specified'});
     }
     if (!recurred && frequencies.includes(frequency)) {
-        res.status(400).json({message: 'Bad Request. Recurred and Frequency Mismatch'});
+      res.status(400).json({message: 'Bad Request. Recurred and Frequency Mismatch'});
     }
     const category = await Category.findByPk(categoryId, {
       include: [{ model: Tag, attributes: ['name'], as: 'tag' }],
@@ -80,29 +80,42 @@ exports.getTransactions = async (req, res) => {
 }
 
 exports.getRecurringTransactions = async (req, res) => {
-    try {
-      const { userId } = req?.user;
-      const transactions = await Transaction.findAll({
-        where: { 'userId': userId, recurred: true },
-        attributes: [
-          'amount',
-          'date',
-          'description',
-          'paymentMethod'
-        ],
+  try {
+    const { userId } = req?.user;
+    const transactions = await Transaction.findAll({
+      where: { 'userId': userId, recurred: true },
+      attributes: [
+        'amount',
+        'date',
+        'description',
+        'paymentMethod'
+      ],
+      include: [{
+        model: Category,
+        attributes: ['name'],
+        as: 'category',
         include: [{
-          model: Category,
+          model: Tag,
           attributes: ['name'],
-          as: 'category',
-          include: [{
-            model: Tag,
-            attributes: ['name'],
-            as: 'tag',
-          }]
-        }],
-      })
-      res.status(200).json(transactions)
-    } catch (e) {
-      res.status(500).json({message: e.message})
-    }
+          as: 'tag',
+        }]
+      }],
+    })
+    res.status(200).json(transactions)
+  } catch (e) {
+    res.status(500).json({message: e.message})
   }
+}
+
+
+exports.cancelRecurring = async (req, res) => {
+  try {
+    const { transactionId } = req.body;
+    const transaction =  await Transaction.findByPk(transactionId);
+    transaction.recurred = false;
+    await transaction.save()
+    res.status(200).json({ message: "Recurring transaction succefully canceled"})
+  } catch (e) {
+    res.status(500).json({message: e.message})
+  }
+}
