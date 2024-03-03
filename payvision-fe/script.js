@@ -62,14 +62,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const signUpUsername = document.getElementById("signupUsername").value;
     const signUpEmail = document.getElementById("signupEmail").value;
     const signUpPassword = document.getElementById("signupPassword").value;
+    const currency = "naira";
 
     const signUpData = {
       username: signUpUsername,
       email: signUpEmail,
+      currency: currency,
       password: signUpPassword,
     };
 
-    const baseUrl = process.env.PAYVISION_URL;
+    const baseUrl = "https://payvision.vercel.app";
 
     fetch(`${baseUrl}/api/auth/signup`, {
       method: "POST",
@@ -80,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.success) {
+        if (data.message === "Registration was successful!") {
           alert("Account created successfully");
         } else {
           alert(data.error || "Signup failed");
@@ -105,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
       password: password,
     };
 
-    const baseUrl = process.env.PAYVISION_URL;
+    const baseUrl = "https://payvision.vercel.app";
 
     // Sends a login request to the backend
     fetch(`${baseUrl}/api/auth/login`, {
@@ -120,7 +122,9 @@ document.addEventListener("DOMContentLoaded", function () {
         hideLoadingIcon();
 
         // Check if login was successful
-        if (data.success) {
+        if (data.message === "Signin successful!") {
+          localStorage.setItem("token", data.token);
+          alert("Login successful");
           banner.style.display = "none";
           featuresSection.style.display = "none";
           dashboard.style.display = "block";
@@ -139,6 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((error) => {
         hideLoadingIcon();
         console.error("Error:", error);
+        alert("An error occurred during login, please try again");
       });
 
     // const loadingTime = Math.floor(Math.random() * (8000 - 4000 + 1)) + 4000;
@@ -217,8 +222,8 @@ document.addEventListener("DOMContentLoaded", function () {
         totalIncome += parseFloat(amount);
 
         let transactionData = {
-          totalIncome: amount,
-          expenseDate: expenseDate.value,
+          amount: amount,
+          date: expenseDate.value,
         };
         // Send the transaction data to the backend
         sendTransactionToBackend(transactionData);
@@ -239,17 +244,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Prepare transaction data for backend
         let transactionData = {
-          expenseInput: expenseInput,
-          expenseCategory: expenseCategory,
+          amount: expenseInput.value,
+          category: expenseCategory.options[expenseCategory.selectedIndex].text,
           description: description,
-          expenseDate: expenseDate,
+          date: expenseDate.value,
         };
 
         // Send the transaction data to the backend
         sendTransactionToBackend(transactionData);
         // Update UI
         totalExpenses += amount;
-        expenseInput.value = ""; // Clear input after submission
+        expenseInput.value = "";
         document.getElementById("expenseDescription").value = "";
       }
       updateDashboard();
@@ -268,7 +273,7 @@ document.addEventListener("DOMContentLoaded", function () {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure you're getting the token as needed
+        // Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(transactionData),
     })
