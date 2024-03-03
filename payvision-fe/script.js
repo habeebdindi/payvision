@@ -125,6 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data.message === "Signin successful!") {
           localStorage.setItem("token", data.token);
           alert("Login successful");
+          fetchUserDetails();
           banner.style.display = "none";
           featuresSection.style.display = "none";
           dashboard.style.display = "block";
@@ -194,6 +195,27 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector(".income-details").style.display = "none";
     document.querySelector(".expenses-details").style.display = "block";
   });
+
+  // Function to fetch user details from the backend
+  function fetchUserDetails() {
+    const baseUrl = "https://payvision.vercel.app";
+    const token = localStorage.getItem("token");
+
+    fetch(`${baseUrl}/api/user/`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((userData) => {
+        console.log("User details fetched:", userData);
+        // retrieve user details for display later
+      })
+      .catch((error) => {
+        console.error("Error fetching user details:", error);
+      });
+  }
 
   // Function to update the dashboard
   function updateDashboard() {
