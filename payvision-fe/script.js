@@ -14,7 +14,8 @@ document.addEventListener("DOMContentLoaded", function () {
   let totalExpenses = 0;
   const incomeInput = document.getElementById("incomeAmount");
   const expenseInput = document.getElementById("expenseAmount");
-  const expenseCategory = document.getElementById("expenseCategory");
+  const expenseCategoryDebit = document.getElementById("expenseCategoryDebit");
+  const expenseCategoryCredit = document.getElementById("expenseCategoryCredit");
   const expenseDate = document.getElementById("expenseDate");
   const addButton = document.querySelectorAll('button[type="submit"]');
 
@@ -120,21 +121,28 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((response) => response.json())
       .then((data) => {
         hideLoadingIcon();
-
+        console.log(data);
         // Check if login was successful
         if (data.message === "Signin successful!") {
           localStorage.setItem("token", data.token);
           alert("Login successful");
-          fetchUserDetails();
-          fetchTags();
-          banner.style.display = "none";
-          featuresSection.style.display = "none";
-          dashboard.style.display = "block";
-          signUpButton.textContent = "Logout";
-
-          // Add logout event listener to signUpButton
-          signUpButton.addEventListener("click", function () {
-            window.location.href = "index.html";
+          fetchUserDetails().then((userDetails) => {
+            // fetchTags();
+            const c = userDetails.currency;
+            document.getElementById("incomeDisplay").textContent = `${c} ${userDetails.totalCredit}`;
+            document.getElementById("expensesDisplay").textContent = `${c} ${userDetails.totalDebit}`;
+            document.getElementById("netDisplay").textContent = `${c} ${userDetails.balance}`;
+            fetchCategoriesForTag(1);
+            fetchCategoriesForTag(2);
+            banner.style.display = "none";
+            featuresSection.style.display = "none";
+            dashboard.style.display = "block";
+            signUpButton.textContent = "Logout";
+  
+            // Add logout event listener to signUpButton
+            signUpButton.addEventListener("click", function () {
+              window.location.href = "index.html";
+            });  
           });
         } else {
           // Handle login failure (e.g., show an error message)
@@ -146,6 +154,15 @@ document.addEventListener("DOMContentLoaded", function () {
         hideLoadingIcon();
         console.error("Error:", error);
         alert("An error occurred during login, please try again");
+      });
+      fetchTransactions().then((transactions) => {
+        transactions.forEach((transaction) => {
+          addTransaction(transaction.date, transaction.description, transaction.category["name"], transaction.amount);
+          console.log(transaction);
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching transactions:", error);
       });
 
     // const loadingTime = Math.floor(Math.random() * (8000 - 4000 + 1)) + 4000;
@@ -202,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const baseUrl = "https://payvision.vercel.app";
     const token = localStorage.getItem("token");
 
-    fetch(`${baseUrl}/api/user/`, {
+    const result = fetch(`${baseUrl}/api/user/`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -212,10 +229,19 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((userData) => {
         console.log("User details fetched:", userData);
         // retrieve user details for display later
+        // return {
+        //   balance: userData.balance,
+        //   currency: userData.currency,
+        //   email: userData.email,
+        //   totalCredit: userData.totalCredit,
+        //   debit: userData.totalDebit
+        // };
+        return userData;
       })
       .catch((error) => {
         console.error("Error fetching user details:", error);
       });
+    return result;
   }
 
   // Function to fetch all tags from the backend
@@ -253,16 +279,30 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((response) => response.json())
       .then((categories) => {
         console.log("Categories for tag fetched:", categories);
-        // add code to update UI later
-      })
-      .catch((error) => {
-        console.error("Error fetching categories for tag:", error);
-      });
+        categories.forEach((category) => {
+          console.log(category);
+          const option = document.createElement("option");
+          option.value = category.id;
+          if (tagId === 1) { 
+            option.className = "debit";
+            option.textContent = category.name;
+            expenseCategoryDebit.appendChild(option);
+
+          } else {
+            option.className = "credit";
+            option.textContent = category.name;
+            expenseCategoryCredit.appendChild(option);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching categories for tag:", error);
+        });
+    });
   }
+  fetchCategoriesForTag(2);
 
   // Function to create a new transaction
   function createTransaction(
-    paymentMethod,
     amount,
     categoryId,
     recurred,
@@ -272,7 +312,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const token = localStorage.getItem("token");
 
     const transactionData = {
-      paymentMethod: paymentMethod,
       amount: amount,
       categoryId: categoryId,
       recurred: recurred,
@@ -307,7 +346,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const baseUrl = "https://payvision.vercel.app";
     const token = localStorage.getItem("token");
   
-    fetch(`${baseUrl}/api/transaction/all`, {
+    const result = fetch(`${baseUrl}/api/transaction/all`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -317,15 +356,17 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((response) => response.json())
       .then((data) => {
         if (data.message === "Transactions fetched successfully") {
-          console.log("Transactions fetched successfully");
+          console.log(data);
           // Here you can update the UI with the fetched transactions
         } else {
           console.error("Failed to fetch transactions: " + data.message);
         }
+        return data;
       })
       .catch((error) => {
         console.error("Error fetching transactions:", error);
       });
+      return result;
   }
 
   // Function to update the dashboard
@@ -341,10 +382,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Function to add a transaction to the Recent Transactions table
   function addTransaction(date, description, category, amount) {
+    const fDate = date.split("T")[0];
+    console.log(fDate);
     const table = document.querySelector(".recent-transactions tbody");
     const row = table.insertRow();
-    row.innerHTML = `<td>${date}</td><td>${description}</td><td>${category}</td><td>$${amount}</td>`;
+    row.innerHTML = `<td>${fDate}</td><td>${description}</td><td>${category}</td><td>${amount}</td>`;
   }
+
+  // function categoryOptions() {
+  //  const baseUrl = "https://payvision.vercel.app";
+  //  const token = localStorage.getItem("token");
+
+  //  fetch(`${baseUrl}/api/category/all`, {
+  //    method: "GET",
+  //    headers: {
+  //      "Content-Type": "application/json",
+  //      Authorization: `Bearer ${token}`,
+  //    },
+  //  })
+  //    .then((response) => response.json())
+  //    .then((categories) => {
+  //      console.log("Categories fetched:", categories);
+  //      categories.forEach((category) => {
+  //        const option = document.createElement("option");
+  //        option.value = category.id;
+  //        if (category.tagId === 1) { 
+  //          option.className = "debit";
+  //          option.textContent = category.name;
+  //          expenseCategoryDebit.appendChild(option);
+
+  //        } else {
+  //          option.className = "credit";
+  //          option.textContent = category.name;
+  //          expenseCategoryCredit.appendChild(option);
+
+  //        }
+  //      });
+  //    })
+  //    .catch((error) => {
+  //      console.error("Error fetching categories:", error);
+  //  });
+  //}
+  //categoryOptions();
 
   addButton.forEach((button) => {
     button.addEventListener("click", function (e) {
