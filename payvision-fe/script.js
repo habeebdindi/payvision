@@ -340,7 +340,7 @@ document.addEventListener("DOMContentLoaded", function () {
       updateDashboard();
 
       // check UI later and incoporate necessary arguement
-      createTransaction(paymentMethod, amount, categoryId, recurred, frequency);
+      // createTransaction(paymentMethod, amount, categoryId, recurred, frequency);
 
       // Assuming modal should be closed after adding
       document.getElementById("myModal").style.display = "none";
