@@ -217,6 +217,27 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  // Function to fetch all tags from the backend
+  function fetchTags() {
+    const baseUrl = "https://payvision.vercel.app";
+    const token = localStorage.getItem("token");
+
+    fetch(`${baseUrl}/api/tag/all`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((tags) => {
+        console.log("Tags fetched:", tags);
+      })
+      .catch((error) => {
+        console.error("Error fetching tags:", error);
+      });
+  }
+
   // Function to update the dashboard
   function updateDashboard() {
     document.getElementById("incomeDisplay").textContent = `$${totalIncome}`;
