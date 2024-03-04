@@ -62,14 +62,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const signUpUsername = document.getElementById("signupUsername").value;
     const signUpEmail = document.getElementById("signupEmail").value;
     const signUpPassword = document.getElementById("signupPassword").value;
+    const currency = "naira";
 
     const signUpData = {
       username: signUpUsername,
       email: signUpEmail,
+      currency: currency,
       password: signUpPassword,
     };
 
-    const baseUrl = process.env.PAYVISION_URL;
+    const baseUrl = "https://payvision.vercel.app";
 
     fetch(`${baseUrl}/api/auth/signup`, {
       method: "POST",
@@ -80,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.success) {
+        if (data.message === "Registration was successful!") {
           alert("Account created successfully");
         } else {
           alert(data.error || "Signup failed");
@@ -105,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
       password: password,
     };
 
-    const baseUrl = process.env.PAYVISION_URL;
+    const baseUrl = "https://payvision.vercel.app";
 
     // Sends a login request to the backend
     fetch(`${baseUrl}/api/auth/login`, {
@@ -120,7 +122,11 @@ document.addEventListener("DOMContentLoaded", function () {
         hideLoadingIcon();
 
         // Check if login was successful
-        if (data.success) {
+        if (data.message === "Signin successful!") {
+          localStorage.setItem("token", data.token);
+          alert("Login successful");
+          fetchUserDetails();
+          fetchTags();
           banner.style.display = "none";
           featuresSection.style.display = "none";
           dashboard.style.display = "block";
@@ -139,6 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((error) => {
         hideLoadingIcon();
         console.error("Error:", error);
+        alert("An error occurred during login, please try again");
       });
 
     // const loadingTime = Math.floor(Math.random() * (8000 - 4000 + 1)) + 4000;
@@ -190,6 +197,137 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector(".expenses-details").style.display = "block";
   });
 
+  // Function to fetch user details from the backend
+  function fetchUserDetails() {
+    const baseUrl = "https://payvision.vercel.app";
+    const token = localStorage.getItem("token");
+
+    fetch(`${baseUrl}/api/user/`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((userData) => {
+        console.log("User details fetched:", userData);
+        // retrieve user details for display later
+      })
+      .catch((error) => {
+        console.error("Error fetching user details:", error);
+      });
+  }
+
+  // Function to fetch all tags from the backend
+  function fetchTags() {
+    const baseUrl = "https://payvision.vercel.app";
+    const token = localStorage.getItem("token");
+
+    fetch(`${baseUrl}/api/tag/all`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((tags) => {
+        console.log("Tags fetched:", tags);
+      })
+      .catch((error) => {
+        console.error("Error fetching tags:", error);
+      });
+  }
+
+  // Function to fetch categories for a specific tag from the backend
+  function fetchCategoriesForTag(tagId) {
+    const baseUrl = "https://payvision.vercel.app";
+    const token = localStorage.getItem("token");
+
+    fetch(`${baseUrl}/api/tag/${tagId}/categories`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((categories) => {
+        console.log("Categories for tag fetched:", categories);
+        // add code to update UI later
+      })
+      .catch((error) => {
+        console.error("Error fetching categories for tag:", error);
+      });
+  }
+
+  // Function to create a new transaction
+  function createTransaction(
+    paymentMethod,
+    amount,
+    categoryId,
+    recurred,
+    frequency
+  ) {
+    const baseUrl = "https://payvision.vercel.app";
+    const token = localStorage.getItem("token");
+
+    const transactionData = {
+      paymentMethod: paymentMethod,
+      amount: amount,
+      categoryId: categoryId,
+      recurred: recurred,
+      frequency: frequency,
+    };
+
+    fetch(`${baseUrl}/api/transaction/new`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(transactionData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === "Transaction created successfully") {
+          alert("Transaction created successfully");
+          // could refresh the transactions list or update the UI accordingly
+        } else {
+          alert("Failed to create transaction: " + data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error creating transaction:", error);
+        alert("An error occurred, please try again");
+      });
+  }
+
+  // Function to fetch all transactions from the backend
+  function fetchTransactions() {
+    const baseUrl = "https://payvision.vercel.app";
+    const token = localStorage.getItem("token");
+  
+    fetch(`${baseUrl}/api/transaction/all`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === "Transactions fetched successfully") {
+          console.log("Transactions fetched successfully");
+          // Here you can update the UI with the fetched transactions
+        } else {
+          console.error("Failed to fetch transactions: " + data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching transactions:", error);
+      });
+  }
+
   // Function to update the dashboard
   function updateDashboard() {
     document.getElementById("incomeDisplay").textContent = `$${totalIncome}`;
@@ -210,49 +348,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
   addButton.forEach((button) => {
     button.addEventListener("click", function (e) {
-      if (this.closest(".income-details")) {
-        e.preventDefault();
-        const amount = parseFloat(incomeInput.value);
-        // Handle income submission
-        totalIncome += parseFloat(amount);
+      e.preventDefault();
 
-        let transactionData = {
-          totalIncome: amount,
-          expenseDate: expenseDate.value,
-        };
-        // Send the transaction data to the backend
-        sendTransactionToBackend(transactionData);
+      const isIncome = this.closest("income-details");
+      const amount = parseFloat(
+        isIncome ? incomeInput.value : expenseInput.value
+      );
+
+      if (isIncome) {
+        totalIncome += amount;
         incomeInput.value = "";
-      } else if (this.closest(".expenses-details")) {
-        e.preventDefault();
-        const amount = parseFloat(expenseInput.value);
-        const description = document.getElementById("expenseDescription").value;
-
-        // Handle expense submission
-        totalExpenses += parseFloat(amount);
-        addTransaction(
-          expenseDate.value,
-          description,
-          expenseCategory.options[expenseCategory.selectedIndex].text,
-          expenseInput.value
-        );
-
-        // Prepare transaction data for backend
-        let transactionData = {
-          expenseInput: expenseInput,
-          expenseCategory: expenseCategory,
-          description: description,
-          expenseDate: expenseDate,
-        };
-
-        // Send the transaction data to the backend
-        sendTransactionToBackend(transactionData);
-        // Update UI
+      } else {
         totalExpenses += amount;
-        expenseInput.value = ""; // Clear input after submission
+        expenseInput.value = "";
         document.getElementById("expenseDescription").value = "";
       }
       updateDashboard();
+
+      // check UI later and incoporate necessary arguement
+      // createTransaction(paymentMethod, amount, categoryId, recurred, frequency);
 
       // Assuming modal should be closed after adding
       document.getElementById("myModal").style.display = "none";
@@ -268,7 +382,7 @@ document.addEventListener("DOMContentLoaded", function () {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure you're getting the token as needed
+        // Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(transactionData),
     })
