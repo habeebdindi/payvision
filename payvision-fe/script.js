@@ -302,6 +302,32 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  // Function to fetch all transactions from the backend
+  function fetchTransactions() {
+    const baseUrl = "https://payvision.vercel.app";
+    const token = localStorage.getItem("token");
+  
+    fetch(`${baseUrl}/api/transaction/all`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === "Transactions fetched successfully") {
+          console.log("Transactions fetched successfully");
+          // Here you can update the UI with the fetched transactions
+        } else {
+          console.error("Failed to fetch transactions: " + data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching transactions:", error);
+      });
+  }
+
   // Function to update the dashboard
   function updateDashboard() {
     document.getElementById("incomeDisplay").textContent = `$${totalIncome}`;
