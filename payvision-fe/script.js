@@ -126,6 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
           localStorage.setItem("token", data.token);
           alert("Login successful");
           fetchUserDetails();
+          fetchTags();
           banner.style.display = "none";
           featuresSection.style.display = "none";
           dashboard.style.display = "block";
@@ -235,6 +236,27 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         console.error("Error fetching tags:", error);
+      });
+  }
+
+  // Function to fetch categories for a specific tag from the backend
+  function fetchCategoriesForTag(tagId) {
+    const baseUrl = "https://payvision.vercel.app";
+    const token = localStorage.getItem("token");
+
+    fetch(`${baseUrl}/api/tag/${tagId}/categories`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((categories) => {
+        console.log("Categories for tag fetched:", categories);
+        // add code to update UI later
+      })
+      .catch((error) => {
+        console.error("Error fetching categories for tag:", error);
       });
   }
 
