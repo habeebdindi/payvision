@@ -260,6 +260,48 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  // Function to create a new transaction
+  function createTransaction(
+    paymentMethod,
+    amount,
+    categoryId,
+    recurred,
+    frequency
+  ) {
+    const baseUrl = "https://payvision.vercel.app";
+    const token = localStorage.getItem("token");
+
+    const transactionData = {
+      paymentMethod: paymentMethod,
+      amount: amount,
+      categoryId: categoryId,
+      recurred: recurred,
+      frequency: frequency,
+    };
+
+    fetch(`${baseUrl}/api/transaction/new`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(transactionData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === "Transaction created successfully") {
+          alert("Transaction created successfully");
+          // could refresh the transactions list or update the UI accordingly
+        } else {
+          alert("Failed to create transaction: " + data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error creating transaction:", error);
+        alert("An error occurred, please try again");
+      });
+  }
+
   // Function to update the dashboard
   function updateDashboard() {
     document.getElementById("incomeDisplay").textContent = `$${totalIncome}`;
@@ -280,49 +322,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
   addButton.forEach((button) => {
     button.addEventListener("click", function (e) {
-      if (this.closest(".income-details")) {
-        e.preventDefault();
-        const amount = parseFloat(incomeInput.value);
-        // Handle income submission
-        totalIncome += parseFloat(amount);
+      e.preventDefault();
 
-        let transactionData = {
-          amount: amount,
-          date: expenseDate.value,
-        };
-        // Send the transaction data to the backend
-        sendTransactionToBackend(transactionData);
+      const isIncome = this.closest("income-details");
+      const amount = parseFloat(
+        isIncome ? incomeInput.value : expenseInput.value
+      );
+
+      if (isIncome) {
+        totalIncome += amount;
         incomeInput.value = "";
-      } else if (this.closest(".expenses-details")) {
-        e.preventDefault();
-        const amount = parseFloat(expenseInput.value);
-        const description = document.getElementById("expenseDescription").value;
-
-        // Handle expense submission
-        totalExpenses += parseFloat(amount);
-        addTransaction(
-          expenseDate.value,
-          description,
-          expenseCategory.options[expenseCategory.selectedIndex].text,
-          expenseInput.value
-        );
-
-        // Prepare transaction data for backend
-        let transactionData = {
-          amount: expenseInput.value,
-          category: expenseCategory.options[expenseCategory.selectedIndex].text,
-          description: description,
-          date: expenseDate.value,
-        };
-
-        // Send the transaction data to the backend
-        sendTransactionToBackend(transactionData);
-        // Update UI
+      } else {
         totalExpenses += amount;
         expenseInput.value = "";
         document.getElementById("expenseDescription").value = "";
       }
       updateDashboard();
+
+      // check UI later and incoporate necessary arguement
+      createTransaction(paymentMethod, amount, categoryId, recurred, frequency);
 
       // Assuming modal should be closed after adding
       document.getElementById("myModal").style.display = "none";
