@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   document.getElementById("incomeDisplay").textContent = `${c} ${userDetails.totalCredit || 0}`;
                   document.getElementById("expensesDisplay").textContent = `${c} ${userDetails.totalDebit || 0}`;
                   document.getElementById("netDisplay").textContent = `${c} ${userDetails.balance || 0}`;
-                  
+
                   banner.style.display = "none";
                   featuresSection.style.display = "none";
                   dashboard.style.display = "block";
@@ -122,8 +122,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     transactions.forEach((transaction) => {
                       addTransaction(transaction.date, transaction.description, transaction.category["name"], transaction.amount);
                       console.log(transaction);
-                      fetchCategoriesForTag(1);
-                      fetchCategoriesForTag(2);
                     });
                   })
                   .catch((error) => {
@@ -205,8 +203,6 @@ document.addEventListener("DOMContentLoaded", function () {
               transactions.forEach((transaction) => {
                 addTransaction(transaction.date, transaction.description, transaction.category["name"], transaction.amount);
                 console.log(transaction);
-                fetchCategoriesForTag(1);
-                fetchCategoriesForTag(2);
               });
             })
             .catch((error) => {
@@ -229,7 +225,6 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Error:", error);
         alert("An error occurred during login, please try again");
       });
-      
 
     // const loadingTime = Math.floor(Math.random() * (8000 - 4000 + 1)) + 4000;
     // showLoadingIcon();
@@ -410,7 +405,7 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log(category);
           const option = document.createElement("option");
           option.value = category.id;
-          if (tagId === 1) { 
+          if (tagId === 1) {
             option.className = "debit";
             option.textContent = category.name;
             expenseCategoryDebit.appendChild(option);
@@ -426,6 +421,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
   }
+
+  fetchCategoriesForTag(1);
   fetchCategoriesForTag(2);
 
   // Function to create a new transaction
@@ -465,7 +462,6 @@ document.addEventListener("DOMContentLoaded", function () {
     //         document.getElementById("incomeDisplay").textContent = `${c} ${userDetails.totalCredit}`;
     //         document.getElementById("expensesDisplay").textContent = `${c} ${userDetails.totalDebit}`;
     //         document.getElementById("netDisplay").textContent = `${c} ${userDetails.balance}`;
-            
     //         banner.style.display = "none";
     //         featuresSection.style.display = "none";
     //         dashboard.style.display = "block";
