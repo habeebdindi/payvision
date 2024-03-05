@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const expenseCategoryCredit = document.getElementById("expenseCategoryCredit");
   const expenseDate = document.getElementById("expenseDate");
   const addButton = document.querySelectorAll('button[type="submit"]');
+  const logTransaction = document.getElementById("log-expense");
 
   // Show Loading Icon function
   function showLoadingIcon() {
@@ -132,8 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("incomeDisplay").textContent = `${c} ${userDetails.totalCredit}`;
             document.getElementById("expensesDisplay").textContent = `${c} ${userDetails.totalDebit}`;
             document.getElementById("netDisplay").textContent = `${c} ${userDetails.balance}`;
-            fetchCategoriesForTag(1);
-            fetchCategoriesForTag(2);
+            
             banner.style.display = "none";
             featuresSection.style.display = "none";
             dashboard.style.display = "block";
@@ -159,6 +159,8 @@ document.addEventListener("DOMContentLoaded", function () {
         transactions.forEach((transaction) => {
           addTransaction(transaction.date, transaction.description, transaction.category["name"], transaction.amount);
           console.log(transaction);
+          fetchCategoriesForTag(1);
+          fetchCategoriesForTag(2);
         });
       })
       .catch((error) => {
@@ -191,6 +193,47 @@ document.addEventListener("DOMContentLoaded", function () {
     const description = (document.getElementById("expenseDescription").value =
       "");
   });
+
+  logTransaction.addEventListener('click', function (event) {
+    const amount = document.getElementById("expenseAmount").value;
+    const frequency = document.getElementById("incomeFrequency").value;
+    const categoryId = document.getElementById("expenseCategoryDebit").value;
+    const description = document.getElementById("expenseDescription").value;
+    const date = document.getElementById("expenseDate").value;
+    const paymentMethod = "cash"
+
+    const transactionData = {
+      amount,
+      frequency,
+      date,
+      categoryId,
+      description,
+      paymentMethod
+    };
+    console.log(transactionData);
+    sendTransactionToBackend(transactionData);
+    // const baseUrl = "https://payvision.vercel.app";
+
+    // fetch(`${baseUrl}/api/transaction/new`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(transactionData),
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     if (data.message === "Registration was successful!") {
+    //       alert("Account created successfully");
+    //     } else {
+    //       alert(data.error || "Signup failed");
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     // console.error("Error:", error);
+    //     alert(error);
+    //   });
+  })
 
   // Close add transaction modal
   cancelAddTransactionModal.addEventListener("click", function (e) {
@@ -317,28 +360,54 @@ document.addEventListener("DOMContentLoaded", function () {
       recurred: recurred,
       frequency: frequency,
     };
+    // sendTransactionToBackend(transactionData);
 
-    fetch(`${baseUrl}/api/transaction/new`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(transactionData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.message === "Transaction created successfully") {
-          alert("Transaction created successfully");
-          // could refresh the transactions list or update the UI accordingly
-        } else {
-          alert("Failed to create transaction: " + data.message);
-        }
-      })
-      .catch((error) => {
-        console.error("Error creating transaction:", error);
-        alert("An error occurred, please try again");
-      });
+    // fetch(`${baseUrl}/api/transaction/new`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    //   body: JSON.stringify(transactionData),
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     if (data.message === "Transaction created successfully") {
+    //       alert("Transaction created successfully");
+    //       // could refresh the transactions list or update the UI accordingly
+    //       fetchUserDetails().then((userDetails) => {
+    //         // fetchTags();
+    //         const c = userDetails.currency;
+    //         document.getElementById("incomeDisplay").textContent = `${c} ${userDetails.totalCredit}`;
+    //         document.getElementById("expensesDisplay").textContent = `${c} ${userDetails.totalDebit}`;
+    //         document.getElementById("netDisplay").textContent = `${c} ${userDetails.balance}`;
+            
+    //         banner.style.display = "none";
+    //         featuresSection.style.display = "none";
+    //         dashboard.style.display = "block";
+    //         signUpButton.textContent = "Logout";
+  
+    //         // Add logout event listener to signUpButton
+    //         signUpButton.addEventListener("click", function () {
+    //           window.location.href = "index.html";
+    //         });  
+    //       });
+    //       fetchTransactions().then((transactions) => {
+    //         transactions.forEach((transaction) => {
+    //           addTransaction(transaction.date, transaction.description, transaction.category["name"], transaction.amount);
+    //           console.log(transaction);
+    //           fetchCategoriesForTag(1);
+    //           fetchCategoriesForTag(2);
+    //         });
+    //       })
+    //     } else {
+    //       alert("Failed to create transaction: " + data.message);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error creating transaction:", error);
+    //     alert("An error occurred, please try again");
+    //   });
   }
 
   // Function to fetch all transactions from the backend
@@ -445,7 +514,7 @@ document.addEventListener("DOMContentLoaded", function () {
       updateDashboard();
 
       // check UI later and incoporate necessary arguement
-      // createTransaction(paymentMethod, amount, categoryId, recurred, frequency);
+      
 
       // Assuming modal should be closed after adding
       document.getElementById("myModal").style.display = "none";
@@ -455,13 +524,13 @@ document.addEventListener("DOMContentLoaded", function () {
   // Function to send transaction data to the backend
   function sendTransactionToBackend(transactionData) {
     const baseUrl = "https://payvision.vercel.app"; // Use your actual backend URL
-
-    fetch(`${baseUrl}/api/transactions/new`, {
+    console.log(transactionData)
+    fetch(`${baseUrl}/api/transaction/new`, {
       // Adjust the endpoint as needed
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${localStorage.getItem("token")}`,
+        authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(transactionData),
     })
@@ -469,7 +538,33 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((data) => {
         console.log("Transaction added:", data);
         // Optionally: Add logic here to update the UI based on the response
+        fetchUserDetails().then((userDetails) => {
+          // fetchTags();
+          const c = userDetails.currency;
+          document.getElementById("incomeDisplay").textContent = `${c} ${userDetails.totalCredit}`;
+          document.getElementById("expensesDisplay").textContent = `${c} ${userDetails.totalDebit}`;
+          document.getElementById("netDisplay").textContent = `${c} ${userDetails.balance}`;
+          
+          banner.style.display = "none";
+          featuresSection.style.display = "none";
+          dashboard.style.display = "block";
+          signUpButton.textContent = "Logout";
+
+          // Add logout event listener to signUpButton
+          signUpButton.addEventListener("click", function () {
+            window.location.href = "index.html";
+          });  
+        });
+        fetchTransactions().then((transactions) => {
+          transactions.forEach((transaction) => {
+            addTransaction(transaction.date, transaction.description, transaction.category["name"], transaction.amount);
+            console.log(transaction);
+            fetchCategoriesForTag(1);
+            fetchCategoriesForTag(2);
+          });
+        
       })
+    })
       .catch((error) => {
         console.error("Error adding transaction:", error);
         // Optionally: Handle errors, such as by displaying a message to the user
