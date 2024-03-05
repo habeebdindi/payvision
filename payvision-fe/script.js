@@ -644,11 +644,13 @@ document.addEventListener("DOMContentLoaded", function () {
           });  
         });
         fetchTransactions().then((transactions) => {
+          const table = document.querySelector(".recent-transactions tbody");
+          while (table.firstChild) {
+            table.removeChild(table.firstChild);
+          }
           transactions.forEach((transaction) => {
             addTransaction(transaction.date, transaction.description, transaction.category["name"], transaction.amount);
             console.log(transaction);
-            fetchCategoriesForTag(1);
-            fetchCategoriesForTag(2);
           });
         
       })
