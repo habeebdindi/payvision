@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const expenseDate = document.getElementById("expenseDate");
   const addButton = document.querySelectorAll('button[type="submit"]');
   const logTransaction = document.getElementById("log-expense");
+  const logIncome = document.getElementById("Add-Income")
 
   // Show Loading Icon function
   function showLoadingIcon() {
@@ -64,7 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const signUpUsername = document.getElementById("signupUsername").value;
     const signUpEmail = document.getElementById("signupEmail").value;
     const signUpPassword = document.getElementById("signupPassword").value;
-    const currency = "naira";
 
     const signUpData = {
       username: signUpUsername,
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
       currency: currency,
       password: signUpPassword,
     };
-
+    console.log(signUpData)
     const baseUrl = "https://payvision.vercel.app";
 
     fetch(`${baseUrl}/api/auth/signup`, {
@@ -193,6 +193,26 @@ document.addEventListener("DOMContentLoaded", function () {
     const description = (document.getElementById("expenseDescription").value =
       "");
   });
+
+  logIncome.addEventListener('click', function (event) {
+    const amount = document.getElementById("incomeAmount").value;
+    const frequency = document.getElementById("incomeFrequency").value;
+    const categoryId = document.getElementById("expenseCategoryCredit").value;
+    const description = document.getElementById("expenseDescription").value;
+    const date = document.getElementById("expenseDate").value;
+    const paymentMethod = "cash"
+
+    const transactionData = {
+      amount,
+      frequency,
+      date,
+      categoryId,
+      description,
+      paymentMethod
+    };
+    console.log(transactionData);
+    sendTransactionToBackend(transactionData);
+  })
 
   logTransaction.addEventListener('click', function (event) {
     const amount = document.getElementById("expenseAmount").value;
