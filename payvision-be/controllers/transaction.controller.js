@@ -8,17 +8,22 @@ const User = db.user;
 exports.createTransaction = async (req, res) => {    
   try {
     const { userId } = req.user;
-    const { description, amount, frequency,
-            paymentMethod, date, recurred, categoryId } = req?.body;
+    const { description, amount, frequency, recurred
+            paymentMethod, date, categoryId } = req?.body;
     if (!(amount && categoryId && paymentMethod)) {
       res.status(400).json({message: 'Bad Request. Incomplete Information'});
     }
     const frequencies = ['daily', 'weekly', 'monthly', 'yearly'];
-    if (recurred && (!(frequency) || !(frequencies.includes(frequency)))) {
-      res.status(400).json({message: 'Bad Request. No Frequency Specified'});
+
+    const newAmount = parseInt(amount);
+    if (newAmount == 0 || newAmount == NaN) {
+      res.status(400).json({message: 'Invalid Amount'});
     }
-    if (!recurred && frequencies.includes(frequency)) {
-      res.status(400).json({message: 'Bad Request. Recurred and Frequency Mismatch'});
+
+    if (!frequencies.includes(frequency)) {
+      recurred = false;
+    } else {
+      recurred = true;
     }
     const category = await Category.findByPk(categoryId, {
       include: [{ model: Tag, attributes: ['name'], as: 'tag' }],
@@ -28,8 +33,8 @@ exports.createTransaction = async (req, res) => {
     }
     const newTransaction = await Transaction.create({
       description: description || 'No Description',
-      amount: amount,
-      paymentMethod: paymentMethod,
+      amount: newAmount,
+      paymentMethod: paymentMethod || "cash",
       date: date || new Date(),
       userId: userId,
       recurred: recurred || false,
