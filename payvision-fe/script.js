@@ -190,7 +190,6 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("incomeDisplay").textContent = `${c} ${userDetails.totalCredit || 0}`;
             document.getElementById("expensesDisplay").textContent = `${c} ${userDetails.totalDebit || 0}`;
             document.getElementById("netDisplay").textContent = `${c} ${userDetails.balance || 0}`;
-            
             banner.style.display = "none";
             featuresSection.style.display = "none";
             dashboard.style.display = "block";
@@ -208,7 +207,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch((error) => {
               console.error("Error fetching transactions:", error);
             });
-  
             // Add logout event listener to signUpButton
             signUpButton.addEventListener("click", function () {
               window.location.href = "index.html";
@@ -431,7 +429,8 @@ document.addEventListener("DOMContentLoaded", function () {
     categoryId,
     recurred,
     frequency
-  ) {
+  )
+  {
     const baseUrl = "https://payvision.vercel.app";
     const token = localStorage.getItem("token");
 
@@ -440,7 +439,7 @@ document.addEventListener("DOMContentLoaded", function () {
       categoryId: categoryId,
       recurred: recurred,
       frequency: frequency,
-    };
+  };
     // sendTransactionToBackend(transactionData);
 
     // fetch(`${baseUrl}/api/transaction/new`, {
@@ -466,7 +465,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //         featuresSection.style.display = "none";
     //         dashboard.style.display = "block";
     //         signUpButton.textContent = "Logout";
-  
+
     //         // Add logout event listener to signUpButton
     //         signUpButton.addEventListener("click", function () {
     //           window.location.href = "index.html";
