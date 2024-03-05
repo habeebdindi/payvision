@@ -27,6 +27,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     currency: {
       type: Sequelize.STRING,
+      default: "NGN"
     },
     totalDebit: {
       type: Sequelize.DOUBLE,
