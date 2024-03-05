@@ -7,10 +7,15 @@ const bcrypt = require('bcryptjs');
 
 exports.signup = async (req, res) => {
   try {
-    const {username, email, password, currency, } = req?.body;
+    const {username, email, password, } = req?.body;
+    const currency = "NGN";
     const user = await User.create({
       username, email, currency, password: bcrypt.hashSync(password, 5)
     });
+    user.balance = 0;
+    user.totalCredit = 0;
+    user.totalDebit = 0;
+    await user.save();
     res.status(200).json({message: "Registration was successful!"});
   } catch (e) {
     res.status(500).json({message: e.message});
