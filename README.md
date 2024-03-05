@@ -36,7 +36,7 @@ Here is a working live demo :
 
 
 
-## [Usage](https://iharsh234.github.io/WebApp/) 
+## [Usage]
 
 ### Development
 Want to contribute? Great!
