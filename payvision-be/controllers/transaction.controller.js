@@ -8,22 +8,20 @@ const User = db.user;
 exports.createTransaction = async (req, res) => {    
   try {
     const { userId } = req.user;
-    const { description, amount, frequency, recurred
+    const { description, amount, frequency,
             paymentMethod, date, categoryId } = req?.body;
     if (!(amount && categoryId && paymentMethod)) {
       res.status(400).json({message: 'Bad Request. Incomplete Information'});
     }
     const frequencies = ['daily', 'weekly', 'monthly', 'yearly'];
-
+    let recurred = true;
     const newAmount = parseInt(amount);
-    if (newAmount == 0 || newAmount == NaN) {
+    if (newAmount == 0 || isNaN(newAmount)) {
       res.status(400).json({message: 'Invalid Amount'});
     }
 
     if (!frequencies.includes(frequency)) {
       recurred = false;
-    } else {
-      recurred = true;
     }
     const category = await Category.findByPk(categoryId, {
       include: [{ model: Tag, attributes: ['name'], as: 'tag' }],
