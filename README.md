@@ -73,7 +73,10 @@ If you'd like to request a new function, feel free to do so by opening an issue 
 - Add more pages and filtering options to filter based of diferent categories
 
 ## Team
-[Habeeb Dindi](https://github.com/habeebdindi) | habeebullahdindi@gmail.com <br\>
-[Henry Anyiam](https://github.com/HenryAnyiam) | anyiamhenry7@gmail.com <br\>
-[Habeeb Dindi](https://github.com/Paulkelvin) | olaitan.u.k@gmail.com <br\>
-[Habeeb Dindi](https://github.com/horlahuk) |
+[Habeeb Dindi](https://github.com/habeebdindi) - Software Engineer (backend)
+
+[Henry Anyiam](https://github.com/HenryAnyiam) - Software Engineer (backend)
+
+[Habeeb Dindi](https://github.com/Paulkelvin) - Software Engineer (frontend)
+
+[Habeeb Dindi](https://github.com/horlahuk) - Software Engineer (frontend)
