@@ -69,7 +69,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const signUpData = {
       username: signUpUsername,
       email: signUpEmail,
-      currency: currency,
       password: signUpPassword,
     };
     console.log(signUpData)
@@ -129,10 +128,10 @@ document.addEventListener("DOMContentLoaded", function () {
           alert("Login successful");
           fetchUserDetails().then((userDetails) => {
             // fetchTags();
-            const c = userDetails.currency;
-            document.getElementById("incomeDisplay").textContent = `${c} ${userDetails.totalCredit}`;
-            document.getElementById("expensesDisplay").textContent = `${c} ${userDetails.totalDebit}`;
-            document.getElementById("netDisplay").textContent = `${c} ${userDetails.balance}`;
+            const c = userDetails.currency || "NGN";
+            document.getElementById("incomeDisplay").textContent = `${c} ${userDetails.totalCredit || 0}`;
+            document.getElementById("expensesDisplay").textContent = `${c} ${userDetails.totalDebit || 0}`;
+            document.getElementById("netDisplay").textContent = `${c} ${userDetails.balance || 0}`;
             
             banner.style.display = "none";
             featuresSection.style.display = "none";
@@ -560,10 +559,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // Optionally: Add logic here to update the UI based on the response
         fetchUserDetails().then((userDetails) => {
           // fetchTags();
-          const c = userDetails.currency;
-          document.getElementById("incomeDisplay").textContent = `${c} ${userDetails.totalCredit}`;
-          document.getElementById("expensesDisplay").textContent = `${c} ${userDetails.totalDebit}`;
-          document.getElementById("netDisplay").textContent = `${c} ${userDetails.balance}`;
+          const c = userDetails.currency || "NGN";
+          document.getElementById("incomeDisplay").textContent = `${c} ${userDetails.totalCredit || 0}`;
+          document.getElementById("expensesDisplay").textContent = `${c} ${userDetails.totalDebit || 0}`;
+          document.getElementById("netDisplay").textContent = `${c} ${userDetails.balance || 0}`;
           
           banner.style.display = "none";
           featuresSection.style.display = "none";
