@@ -59,7 +59,7 @@ exports.getTransactions = async (req, res) => {
     const { userId } = req?.user;
     const transactions = await Transaction.findAll({
       where: { 'userId': userId },
-      order: ['date', 'DESC'],
+      order: ['date', 'ASC'],
       attributes: [
         'amount',
         'date',
