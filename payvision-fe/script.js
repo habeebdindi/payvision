@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const amount = document.getElementById("incomeAmount").value;
     const frequency = document.getElementById("incomeFrequency").value;
     const categoryId = document.getElementById("expenseCategoryCredit").value;
-    const description = document.getElementById("expenseDescription").value;
+    const description = document.querySelector(".income-details #expenseDescription").value;
     const date = document.getElementById("expenseDate").value;
     const paymentMethod = "cash"
 
@@ -277,8 +277,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const amount = document.getElementById("expenseAmount").value;
     const frequency = document.getElementById("incomeFrequency").value;
     const categoryId = document.getElementById("expenseCategoryDebit").value;
-    const description = document.getElementById("expenseDescription").value;
-    const date = document.getElementById("expenseDate").value;
+    const description = document.querySelector(".expenses-details #expenseDescription").value;
+    const date = document.querySelector(".expenses-details #expenseDate").value;
     const paymentMethod = "cash"
 
     const transactionData = {
@@ -291,27 +291,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     console.log(transactionData);
     sendTransactionToBackend(transactionData);
-    // const baseUrl = "https://payvision.vercel.app";
-
-    // fetch(`${baseUrl}/api/transaction/new`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(transactionData),
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     if (data.message === "Registration was successful!") {
-    //       alert("Account created successfully");
-    //     } else {
-    //       alert(data.error || "Signup failed");
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     // console.error("Error:", error);
-    //     alert(error);
-    //   });
   })
 
   // Close add transaction modal
