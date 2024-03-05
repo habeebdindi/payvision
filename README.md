@@ -77,6 +77,6 @@ If you'd like to request a new function, feel free to do so by opening an issue 
 
 [Henry Anyiam](https://github.com/HenryAnyiam) - Software Engineer (backend)
 
-[Habeeb Dindi](https://github.com/Paulkelvin) - Software Engineer (frontend)
+[Kelvin Adesanya](https://github.com/Paulkelvin) - Software Engineer (frontend)
 
-[Habeeb Dindi](https://github.com/horlahuk) - Software Engineer (frontend)
+[Kamaldeen Usman](https://github.com/horlahuk) - Software Engineer (frontend)
