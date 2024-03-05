@@ -84,7 +84,68 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((response) => response.json())
       .then((data) => {
         if (data.message === "Registration was successful!") {
-          alert("Account created successfully");
+          let loginData = {
+            username: signUpUsername,
+            password: signUpPassword,
+          }
+          fetch(`${baseUrl}/api/auth/login`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(loginData),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              hideLoadingIcon();
+              console.log(data);
+              // Check if login was successful
+              if (data.message === "Signin successful!") {
+                localStorage.removeItem("token")
+                localStorage.setItem("token", data.token);
+                fetchUserDetails().then((userDetails) => {
+                  // fetchTags();
+                  const c = userDetails.currency || "NGN";
+                  document.getElementById("incomeDisplay").textContent = `${c} ${userDetails.totalCredit || 0}`;
+                  document.getElementById("expensesDisplay").textContent = `${c} ${userDetails.totalDebit || 0}`;
+                  document.getElementById("netDisplay").textContent = `${c} ${userDetails.balance || 0}`;
+                  
+                  banner.style.display = "none";
+                  featuresSection.style.display = "none";
+                  dashboard.style.display = "block";
+                  signUpButton.textContent = "Logout";
+                  fetchTransactions().then((transactions) => {
+                    const table = document.querySelector(".recent-transactions tbody");
+                    while (table.firstChild) {
+                      table.removeChild(table.firstChild);
+                    }
+                    transactions.forEach((transaction) => {
+                      addTransaction(transaction.date, transaction.description, transaction.category["name"], transaction.amount);
+                      console.log(transaction);
+                      fetchCategoriesForTag(1);
+                      fetchCategoriesForTag(2);
+                    });
+                  })
+                  .catch((error) => {
+                    console.error("Error fetching transactions:", error);
+                  });
+                  // Add logout event listener to signUpButton
+                  signUpButton.addEventListener("click", function () {
+                    window.location.href = "index.html";
+                  });  
+                });
+              } else {
+                // Handle login failure (e.g., show an error message)
+                console.error("Login failed:", data.message);
+                alert(data.message);
+              }
+            })
+            .catch((error) => {
+              hideLoadingIcon();
+              console.error("Error:", error);
+              alert("An error occurred during login, please try again");
+            });
+            
         } else {
           alert(data.error || "Signup failed");
         }
@@ -125,7 +186,6 @@ document.addEventListener("DOMContentLoaded", function () {
         // Check if login was successful
         if (data.message === "Signin successful!") {
           localStorage.setItem("token", data.token);
-          alert("Login successful");
           fetchUserDetails().then((userDetails) => {
             // fetchTags();
             const c = userDetails.currency || "NGN";
@@ -137,6 +197,21 @@ document.addEventListener("DOMContentLoaded", function () {
             featuresSection.style.display = "none";
             dashboard.style.display = "block";
             signUpButton.textContent = "Logout";
+            fetchTransactions().then((transactions) => {
+              const table = document.querySelector(".recent-transactions tbody");
+              while (table.firstChild) {
+                table.removeChild(table.firstChild);
+              }
+              transactions.forEach((transaction) => {
+                addTransaction(transaction.date, transaction.description, transaction.category["name"], transaction.amount);
+                console.log(transaction);
+                fetchCategoriesForTag(1);
+                fetchCategoriesForTag(2);
+              });
+            })
+            .catch((error) => {
+              console.error("Error fetching transactions:", error);
+            });
   
             // Add logout event listener to signUpButton
             signUpButton.addEventListener("click", function () {
@@ -154,17 +229,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Error:", error);
         alert("An error occurred during login, please try again");
       });
-      fetchTransactions().then((transactions) => {
-        transactions.forEach((transaction) => {
-          addTransaction(transaction.date, transaction.description, transaction.category["name"], transaction.amount);
-          console.log(transaction);
-          fetchCategoriesForTag(1);
-          fetchCategoriesForTag(2);
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching transactions:", error);
-      });
+      
 
     // const loadingTime = Math.floor(Math.random() * (8000 - 4000 + 1)) + 4000;
     // showLoadingIcon();
@@ -443,10 +508,14 @@ document.addEventListener("DOMContentLoaded", function () {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.message === "Transactions fetched successfully") {
+        if (!data.message) {
           console.log(data);
           // Here you can update the UI with the fetched transactions
         } else {
+          const table = document.querySelector(".recent-transactions tbody");
+          while (table.firstChild) {
+            table.removeChild(table.firstChild);
+          }
           console.error("Failed to fetch transactions: " + data.message);
         }
         return data;
