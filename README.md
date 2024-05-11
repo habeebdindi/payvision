@@ -15,7 +15,7 @@
 Here is video [demo](https://www.loom.com/share/aedbc6744b7a4b67aee6aae617e9af40?sid=58e3d5c3-7701-4294-8ff4-0e8e7f3ed9f1)
 
 
-## Site
+## Site - Usage
 
 ### Getting started
 ![image](https://github.com/habeebdindi/payvision/assets/76703071/75d5ecdd-628b-4d46-8c35-bc61e6345064)
@@ -34,9 +34,6 @@ Here is video [demo](https://www.loom.com/share/aedbc6744b7a4b67aee6aae617e9af40
 ![image](https://github.com/habeebdindi/payvision/assets/76703071/09f675f0-7bf3-433f-945b-d9faf601be2e)
 
 
-
-
-## [Usage]
 
 ### Development
 Want to contribute? Great!
